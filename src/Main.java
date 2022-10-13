@@ -11,21 +11,58 @@ import java.util.Scanner;
  *
  */
 
+/**
+ *
+ * Задачи:
+ * 1. Получить строку введенную в консоль.
+ * 2. Получить оператор.
+ * 3. Получить операнды разделив строку по оператору.
+ * 4. Написать конвертер для римских цифр. (Из римских в арабские и наоборот).
+ * 4. Проверить числа римские или арабские. Если оба числа римские или арабские -> ОК. Иначе, Исключение.
+ * 4.1 Проверить чтобы числа были в диапазоне от (1 .. 10). Иначе, Исключение. Если числа не целые, исключение.
+ * 5. Реализуем калькулятор
+ * 5.1 Если числа арабские, считаем и выводим результат. (Округляем до целого)
+ * 5.2. Если числа римские, переводим в арабские, выполняем вычесление. Если результат < 1 выбрасыываем Исключение.
+ *      Переводим результат в число Римскими цифрами.
+ * 6. Показываем результат.
+ */
+
 public class Main {
+
+    private static final String NO_OPERATOR = "OPERATOR IS NULL";
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Введите выражение: ");
         String input = scanner.nextLine().replaceAll("\\s+", "");
 
-        System.out.println("Вывод: " + input);
+        System.out.println("Вывод введенной строки: " + input);
+        System.out.println("Вывод: " + calc(input));
 
     }
 
-
-
     public static String calc(String input){
+        String operator = getOperator(input);
+        if(operator.equals(NO_OPERATOR)){
+            //TODO: Выбросить исключение ("Введено неккоректное выражение")
+            return "Введено неккоректное выражение";
+        }
+
+
         return "";
+    }
+
+    private static String getOperator(String input){
+        String operator = NO_OPERATOR;
+        String[] operatorsList = {"+","-","*","/"};
+
+        for (String s : operatorsList) {
+            if (input.contains(s)) {
+                operator = s;
+                break;
+            }
+        }
+        return operator;
     }
 
 }
