@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -16,7 +17,7 @@ import java.util.Scanner;
  * Задачи:
  * 1. Получить строку введенную в консоль. +
  * 2. Получить оператор. +
- * 3. Получить операнды разделив строку по оператору.
+ * 3. Получить операнды разделив строку по оператору. +
  * 4. Написать конвертер для римских цифр. (Из римских в арабские и наоборот).
  * 4. Проверить числа римские или арабские. Если оба числа римские или арабские -> ОК. Иначе, Исключение.
  * 4.1 Проверить чтобы числа были в диапазоне от (1 .. 10). Иначе, Исключение. Если числа не целые, исключение.
@@ -55,9 +56,21 @@ public class Main {
         }
         System.out.println(operands[0] + operands[1]);
 
+        if(checkByRoman(operands[0]) && checkByRoman(operands[1])){
+            System.out.println("Is roman");
+        }else if (!checkByRoman(operands[0]) && !checkByRoman(operands[1])){
+            System.out.println("Is arabic");
+        }else {
+            //TODO: Выбросить исключение ("Введено неккоректное выражение")
+            return "Введено неккоректное выражение";
+        }
         return "";
     }
 
+    public static boolean checkByRoman(String value){
+        RomanNumberConverter converter = new RomanNumberConverter();
+        return converter.isRomanNumber(value);
+    }
     private static String getOperator(String input){
         String operator = NO_OPERATOR;
         String[] operatorsList = {"+","-","*","/"};
@@ -70,6 +83,7 @@ public class Main {
         }
         return operator;
     }
+
 
 }
 
