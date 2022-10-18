@@ -1,12 +1,13 @@
+import java.io.IOException;
 import java.util.Scanner;
 
-/**
- * Создай консольное приложение “Калькулятор”.
- * Приложение должно читать из консоли введенные пользователем строки, числа, арифметические операции проводимые между
- * ними и выводить в консоль результат их выполнения.
- * Реализуй класс Main с методом public static String calc(String input). Метод должен принимать строку с арифметическим
- * выражением между двумя числами и возвращать строку с результатом их выполнения. Ты можешь добавлять свои импорты,
- * классы и методы. Добавленные классы не должны иметь модификаторы доступа (public или другие)
+/*
+  Создай консольное приложение “Калькулятор”.
+  Приложение должно читать из консоли введенные пользователем строки, числа, арифметические операции проводимые между
+  ними и выводить в консоль результат их выполнения.
+  Реализуй класс Main с методом public static String calc(String input). Метод должен принимать строку с арифметическим
+  выражением между двумя числами и возвращать строку с результатом их выполнения. Ты можешь добавлять свои импорты,
+  классы и методы. Добавленные классы не должны иметь модификаторы доступа (public или другие)
  */
 
 /**
@@ -26,65 +27,68 @@ import java.util.Scanner;
  */
 
 public class Main {
-
     private static final String NO_OPERATOR = "OPERATOR IS NULL";
-
+    private static final RomanNumberConverter converter = new RomanNumberConverter();
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
         System.out.print("Введите выражение: ");
         String input = scanner.nextLine().replaceAll("\\s+", "");
 
-        System.out.println("Вывод введенной строки: " + input);
-        System.out.println("Вывод: " + calc(input));
-
+        try {
+            System.out.println("Вывод: " + calc(input));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static String calc(String input) {
+    public static String calc(String input) throws IOException {
         String operator = getOperator(input);
         if (operator.equals(NO_OPERATOR)) {
-            //TODO: Выбросить исключение ("Введено неккоректное выражение")
-            return "Введено неккоректное выражение";
+            throw new IOException("формат математической операции не удовлетворяет заданию - два операнда и один оператор (+, -, /, *)");
         }
 
         String[] operands = input.split("[-+/*]");
         if (operands.length > 2) {
-            //TODO: Выбросить исключение ("Введено неккоректное выражение")
-            return "Введено неккоректное выражение";
+            throw new IOException("формат математической операции не удовлетворяет заданию - два операнда и один оператор (+, -, /, *)");
         }
-        System.out.println(operands[0] + operands[1]);
 
         int firstOperand = 0;
         int secondOperand = 0;
 
         if (checkByRoman(operands[0]) && checkByRoman(operands[1])) {
-            System.out.println("Is roman");
-
+            try {
+                firstOperand = converter.romanToArabic(operands[0]);
+                secondOperand = converter.romanToArabic(operands[1]);
+                return converter.arabicToRoman(calculation(firstOperand, secondOperand, operator));
+            } catch (IOException e) {
+                throw new IOException(e);
+            }
         } else if (!checkByRoman(operands[0]) && !checkByRoman(operands[1])) {
-            System.out.println("Is arabic");
-
             try {
                 firstOperand = Integer.parseInt(operands[0]);
                 secondOperand = Integer.parseInt(operands[1]);
             } catch (NumberFormatException e) {
-                return "Введено неккоректное выражение " + e;
+                throw new IOException(e);
             }
-
-            if (firstOperand > 0 && secondOperand > 0 && firstOperand <= 10 && secondOperand <= 10) {
-                return calculation(firstOperand, secondOperand, operator);
-            } else {
-                //TODO: Выбросить исключение ("Введено неккоректное выражение")
-                return "Введено неккоректное выражение";
+            try{
+                if(checkCorrectRangeNumber(firstOperand,secondOperand)){
+                    return String.valueOf(calculation(firstOperand,secondOperand,operator));
+                }else {
+                    throw new IOException("Числа выходят за диапозон указаный в задании");
+                }
+            } catch (IOException e){
+                throw new IOException(e);
             }
-
         } else {
-            //TODO: Выбросить исключение ("Введено неккоректное выражение")
-            return "Введено неккоректное выражение";
+            throw new IOException("Используются одновременно разные системы счисления");
         }
-        return "";
     }
 
-    public static String calculation(int firstOperand, int secondOperand, String operator) {
+    public static boolean checkCorrectRangeNumber(int firstOperand, int secondOperand){
+        return firstOperand > 0 && secondOperand > 0 && firstOperand <= 10 && secondOperand <= 10;
+    }
+
+    public static int calculation(int firstOperand, int secondOperand, String operator) {
         int result = 0;
 
         switch (operator) {
@@ -106,11 +110,10 @@ public class Main {
             }
         }
 
-        return String.valueOf(result);
+        return result;
     }
 
     public static boolean checkByRoman(String value) {
-        RomanNumberConverter converter = new RomanNumberConverter();
         return converter.isRomanNumber(value);
     }
 
