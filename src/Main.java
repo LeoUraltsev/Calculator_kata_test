@@ -60,6 +60,15 @@ public class Main {
             System.out.println("Is roman");
         }else if (!checkByRoman(operands[0]) && !checkByRoman(operands[1])){
             System.out.println("Is arabic");
+            int firstOperand = 0;
+            int secondOperand = 0;
+            try {
+                firstOperand = Integer.parseInt(operands[0]);
+                secondOperand = Integer.parseInt(operands[1]);
+            }catch (NumberFormatException e){
+                return "Введено неккоректное выражение " + e;
+            }
+            System.out.println(firstOperand + secondOperand);
         }else {
             //TODO: Выбросить исключение ("Введено неккоректное выражение")
             return "Введено неккоректное выражение";
