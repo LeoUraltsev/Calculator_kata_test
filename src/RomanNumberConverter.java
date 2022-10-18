@@ -43,7 +43,7 @@ class RomanNumberConverter {
             }
             return result;
         } else {
-            throw new IOException();
+            throw new IOException("Введено не корректное римское число");
         }
 
     }
@@ -59,7 +59,7 @@ class RomanNumberConverter {
             } while (value != 0);
             return roman;
         }else {
-            throw new IOException();
+            throw new IOException("в римской системе нет отрицательных чисел");
         }
 
     }

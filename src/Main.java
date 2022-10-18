@@ -37,16 +37,15 @@ public class Main {
         try {
             System.out.println("Вывод: " + calc(input));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Ошибка при выполнении работы: " + e);
         }
     }
 
     public static String calc(String input) throws IOException {
         String operator = getOperator(input);
         if (operator.equals(NO_OPERATOR)) {
-            throw new IOException("формат математической операции не удовлетворяет заданию - два операнда и один оператор (+, -, /, *)");
+            throw new IOException("строка не является математической операцией");
         }
-
         String[] operands = input.split("[-+/*]");
         if (operands.length > 2) {
             throw new IOException("формат математической операции не удовлетворяет заданию - два операнда и один оператор (+, -, /, *)");
@@ -59,6 +58,7 @@ public class Main {
             try {
                 firstOperand = converter.romanToArabic(operands[0]);
                 secondOperand = converter.romanToArabic(operands[1]);
+                checkCorrectRangeNumber(firstOperand,secondOperand);
                 return converter.arabicToRoman(calculation(firstOperand, secondOperand, operator));
             } catch (IOException e) {
                 throw new IOException(e);
@@ -67,25 +67,21 @@ public class Main {
             try {
                 firstOperand = Integer.parseInt(operands[0]);
                 secondOperand = Integer.parseInt(operands[1]);
+                checkCorrectRangeNumber(firstOperand,secondOperand);
             } catch (NumberFormatException e) {
                 throw new IOException(e);
             }
-            try{
-                if(checkCorrectRangeNumber(firstOperand,secondOperand)){
-                    return String.valueOf(calculation(firstOperand,secondOperand,operator));
-                }else {
-                    throw new IOException("Числа выходят за диапозон указаный в задании");
-                }
-            } catch (IOException e){
-                throw new IOException(e);
-            }
+            return String.valueOf(calculation(firstOperand,secondOperand,operator));
+
         } else {
             throw new IOException("Используются одновременно разные системы счисления");
         }
     }
 
-    public static boolean checkCorrectRangeNumber(int firstOperand, int secondOperand){
-        return firstOperand > 0 && secondOperand > 0 && firstOperand <= 10 && secondOperand <= 10;
+    public static void checkCorrectRangeNumber(int firstOperand, int secondOperand) throws IOException {
+        if( !(firstOperand > 0 && secondOperand > 0 && firstOperand <= 10 && secondOperand <= 10)){
+            throw new IOException("Числа выходят за диапозон указаный в задании");
+        }
     }
 
     public static int calculation(int firstOperand, int secondOperand, String operator) {
